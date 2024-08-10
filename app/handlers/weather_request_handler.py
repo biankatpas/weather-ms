@@ -3,4 +3,6 @@ from app.services.weather_service import WeatherService
 
 
 class WeatherRequestHandler(tornado.web.RequestHandler):
-    pass
+
+    def get(self):
+        self.write("Hello, I'm running!")
