@@ -1,0 +1,11 @@
+# Tornado web framework
+tornado>=6.3,<7.0
+
+# Data manipulation
+pandas>=2.0,<3.0
+
+# Testing framework
+pytest>=7.4,<8.0
+
+# HTTP requests for tests
+aiohttp>=3.8,<4.0

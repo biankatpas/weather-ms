@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  weather-ms:
+    build: .
+    container_name: weather-ms
+    ports:
+      - "8000:8000"
+    environment:
+      - API_KEY=your_api_key_here
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
