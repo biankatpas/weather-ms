@@ -1,2 +1,3 @@
 from .weather_request_handler import WeatherRequestHandler
 from .weather_percentage_request_handler import WeatherPercentageRequestHandler
+from .id_register_request_handler import IdRegisterRequestHandler
