@@ -5,7 +5,7 @@ services:
     build: .
     container_name: weather-ms
     ports:
-      - "8000:8000"
+      - "8888:8888"
     environment:
       - API_KEY=your_api_key_here
     command: python main.py
