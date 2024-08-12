@@ -83,7 +83,7 @@ To run the Weather Microservice project using Docker, follow these steps:
    ```bash
    docker-compose up --build
    ```
-### 5.Use Postman to Test Endpoints
+### 5. Use Postman to Test Endpoints
 
 Open Postman and use the following endpoints:
 
@@ -99,3 +99,6 @@ Note: If the `.env` file is not correctly configured or the Docker container is 
 
 Unit tests are currently under development. Once available, they will be located in the `app/tests` directory of the project. Please check back later for updates on how to run and use the test suite.
 
+## Technical Decision Documentation
+
+Documentation for technical decisions is currently being developed. This section will provide insights into the design choices, architectural decisions, and reasoning behind implementations in the project. Please refer to this section for detailed explanations and updates as they become available.
