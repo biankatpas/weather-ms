@@ -94,3 +94,8 @@ Open Postman and use the following endpoints:
 Ensure that you include the correct `user_request_id` in the request body when using the `/weather` and `/weather/progress` endpoints.
 
 Note: If the `.env` file is not correctly configured or the Docker container is not running, the endpoints will not be accessible.
+
+## Running Tests
+
+Unit tests are currently under development. Once available, they will be located in the `tests` directory of the project. Please check back later for updates on how to run and use the test suite.
+
