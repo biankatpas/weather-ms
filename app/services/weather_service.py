@@ -20,12 +20,12 @@ class WeatherService:
         self.request_timeout = 10
 
     # TODO: review
-    async def process(self, request_uuid, user_id, cities_id, units="metric"):
+    async def process(self, user_request_id, cities_id, units="metric"):
         async with aiohttp.ClientSession() as session:
             tasks = []
             for city_id in cities_id:
                 url = f"{self.weather_api_endpoint}?id={city_id}&appid={self.api_key}&units={units}"
-                tasks.append(self.__fetch_city_weather_data(session, url, request_uuid, user_id))
+                tasks.append(self.__fetch_city_weather_data(session, url, user_request_id))
 
                 if len(tasks) >= self.limit:
                     results = await asyncio.gather(*tasks)
@@ -35,13 +35,13 @@ class WeatherService:
             if tasks:
                 results = await asyncio.gather(*tasks)
 
-    async def __fetch_city_weather_data(self, session, url, request_uuid, user_id):
+    async def __fetch_city_weather_data(self, session, url, user_request_id):
         try:
             async with session.get(url, timeout=self.request_timeout) as response:
                 if response.status == HTTPStatus.OK:
                     data = await response.json()
                     self.repository.store_weather_data_on_db(
-                        request_uuid=request_uuid, user_id=user_id, data=data
+                        user_request_id=user_request_id, data=data
                     )
                     return data
                 else:

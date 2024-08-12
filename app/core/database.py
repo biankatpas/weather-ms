@@ -13,13 +13,11 @@ def initialize_db():
         # TODO: add request_datetime
         conn.execute("""
             CREATE TABLE IF NOT EXISTS progress (
-                request_uuid TEXT,
-                user_id TEXT,
+                user_request_id TEXT,
                 city_id INTEGER,
                 temperature REAL,
                 humidity REAL,
-                PRIMARY KEY (request_uuid, city_id),
-                FOREIGN KEY (user_id) REFERENCES user(id)
+                FOREIGN KEY (user_request_id) REFERENCES user(id)
             )
         """)
     conn.close()

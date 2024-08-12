@@ -23,19 +23,21 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         request_body = self.request.body.decode('utf-8')
         try:
             request_data = tornado.escape.json_decode(request_body)
-            user_id = request_data.get("user_id")
+            user_request_id = request_data.get("user_request_id")
         except ValueError as e:
             self.set_status(HTTPStatus.BAD_REQUEST)
             self.write({"error": "Invalid JSON", "message": str(e)})
             return
 
-        if not user_id:
+        if not user_request_id:
             self.set_status(HTTPStatus.BAD_REQUEST)
-            self.write({"error": "User ID is required"})
+            self.write(
+                {"error": "user_request_id field is required"}
+            )
             return
 
         cursor = self.db_connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM user WHERE id = ?", (user_id,))
+        cursor.execute("SELECT COUNT(*) FROM user WHERE id = ?", (user_request_id,))
         exists = cursor.fetchone()[0]
 
         if not exists:
@@ -43,20 +45,25 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
             self.write({"error": "User ID does not exist"})
             return
 
-        request_uuid = str(uuid.uuid4())
+        cursor.execute("SELECT COUNT(*) FROM progress WHERE user_request_id = ?", (user_request_id,))
+        request_id_exists = cursor.fetchone()[0]
+
+        if request_id_exists:
+            self.set_status(HTTPStatus.CONFLICT)
+            self.write({"error": "Request ID already exists. Please generate a new ID."})
+            return
+
         # TODO: get file path from request body
         cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
 
         await self.service.process(
-            request_uuid=request_uuid,
-            user_id=user_id,
+            user_request_id=user_request_id,
             cities_id=cities_id
         )
 
         response = {
             "status": "success",
-            "message": "Weather data requested successfully",
-            "request_uuid": request_uuid
+            "message": "weather data requested successfully",
         }
         self.status_code = HTTPStatus.OK
         self.write(response)
