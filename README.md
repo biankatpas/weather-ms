@@ -102,3 +102,8 @@ Unit tests are currently under development. Once available, they will be located
 ## Technical Decision Documentation
 
 Documentation for technical decisions is currently being developed. This section will provide insights into the design choices, architectural decisions, and reasoning behind implementations in the project. Please refer to this section for detailed explanations and updates as they become available.
+
+## Code Improvements
+
+Some code improvements and enhancements are identified throughout the project with TODO comments. These TODOs highlight areas where further development or optimization is planned. Please refer to these comments in the code files for details on the planned improvements and updates.
+
