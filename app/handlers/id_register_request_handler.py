@@ -1,8 +1,7 @@
-from http import HTTPStatus
-
 import uuid
-import sqlite3
 import tornado.web
+
+from http import HTTPStatus
 
 
 class IdRegisterRequestHandler(tornado.web.RequestHandler):
@@ -11,15 +10,22 @@ class IdRegisterRequestHandler(tornado.web.RequestHandler):
         self.db_connection = db_connection
 
     async def post(self):
-        user_id = str(uuid.uuid4())
+        user_uuid = str(uuid.uuid4())
 
         cursor = self.db_connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM user_ids WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT COUNT(*) FROM user WHERE id = ?", (user_uuid,))
         exists = cursor.fetchone()[0]
 
+        # TODO: implement DB access code in user_storage.py
         if exists:
             self.post()
         else:
-            cursor.execute("INSERT INTO user_ids (user_id) VALUES (?)", (user_id,))
+            cursor.execute("INSERT INTO user (id) VALUES (?)", (user_uuid,))
             self.db_connection.commit()
-            self.write({"success": f'User ID {user_id} registered successfully'})
+            response = {
+                "status": "success",
+                "message": "User ID registered successfully",
+                "id": user_uuid
+            }
+            self.status_code = HTTPStatus.OK
+            self.write(response)

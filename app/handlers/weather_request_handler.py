@@ -1,16 +1,19 @@
-from http import HTTPStatus
+import uuid
 import tornado.web
 import tornado.escape
-import sqlite3
+
+from http import HTTPStatus
 
 from app.services.weather_service import WeatherService
+from app.storage.weather_storage import WeatherStorage
 from app.utils.csv_utils import read_cities_ids_from_csv
 
 
 class WeatherRequestHandler(tornado.web.RequestHandler):
     def initialize(self, db_connection):
-        self.service = WeatherService()
         self.db_connection = db_connection
+        self.storage = WeatherStorage(db_connection)
+        self.service = WeatherService()
 
     async def post(self):
         if not self.request.body:
@@ -33,7 +36,7 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
             return
 
         cursor = self.db_connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM user_ids WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT COUNT(*) FROM user WHERE id = ?", (user_id,))
         exists = cursor.fetchone()[0]
 
         if not exists:
@@ -41,9 +44,22 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
             self.write({"error": "User ID does not exist"})
             return
 
+        request_uuid = str(uuid.uuid4())
+        # TODO: get file path from request body
         cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
 
-        self.service.get_weather_by_cities_id(cities_id=cities_id)
+        weather_data = await self.service.get_weather_by_cities_id(
+            cities_id=cities_id
+        )
 
-        # TODO: store data as json
-        # TODO: post response
+        self.storage.store_weather_data_as_json(
+            user_id=user_id, request_uuid=request_uuid, data=weather_data
+        )
+
+        response = {
+            "status": "success",
+            "message": "Weather data requested successfully",
+            "request_id": request_uuid
+        }
+        self.status_code = HTTPStatus.OK
+        self.write(response)

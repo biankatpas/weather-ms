@@ -1,6 +1,5 @@
 import tornado.ioloop
 import tornado.web
-import sqlite3
 
 from decouple import config
 
@@ -10,17 +9,20 @@ from app.handlers import (
     IdRegisterRequestHandler
 )
 
+from app.core.database import initialize_db, get_db_connection
+
 PORT = config("PORT", default=8888, cast=int)
 
+initialize_db()
+
 def make_app():
-    db_connection = sqlite3.connect('user_ids.db')
-    db_connection.execute("CREATE TABLE IF NOT EXISTS user_ids (user_id TEXT UNIQUE)")
+    db_connection = get_db_connection()
 
     return tornado.web.Application(
         [
            (r"/user/register", IdRegisterRequestHandler, dict(db_connection=db_connection)),
            (r"/weather", WeatherRequestHandler, dict(db_connection=db_connection)),
-           (r"/weather/percentage", WeatherPercentageRequestHandler),
+           (r"/weather/percentage", WeatherPercentageRequestHandler, dict(db_connection=db_connection)),
         ],
         debug=True,
         autoreload=True

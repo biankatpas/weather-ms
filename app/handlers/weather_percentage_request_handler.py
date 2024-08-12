@@ -6,6 +6,6 @@ from app.services.weather_service import WeatherService
 
 
 class WeatherPercentageRequestHandler(tornado.web.RequestHandler):
-
+    # TODO: WIP
     def get(self):
         pass
