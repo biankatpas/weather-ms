@@ -19,6 +19,7 @@ class WeatherService:
         self.delay = 60
         self.request_timeout = 10
 
+    # TODO: review
     async def process(self, request_uuid, user_id, cities_id, units="metric"):
         async with aiohttp.ClientSession() as session:
             tasks = []
