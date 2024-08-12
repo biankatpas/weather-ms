@@ -1,3 +1,8 @@
+import json
+
+from datetime import datetime
+
+
 class WeatherRepository:
     def __init__(self, db_connection):
         self.db_connection = db_connection
@@ -5,6 +10,7 @@ class WeatherRepository:
     def store_weather_data_on_db(self, user_request_id, data):
         try:
             cursor = self.db_connection.cursor()
+            request_datetime = datetime.utcnow().isoformat()
 
             item = {
                 "city_id": data['id'],
@@ -12,9 +18,11 @@ class WeatherRepository:
                 "humidity": data['main']['humidity']
             }
 
+            weather_data_json = json.dumps(item)
+
             cursor.execute(
-                "INSERT INTO progress (user_request_id, city_id, temperature, humidity) VALUES (?, ?, ?, ?)",
-                (user_request_id, item['city_id'], item['temperature'], item['humidity'])
+                "INSERT INTO progress (user_request_id, weather_data, request_datetime) VALUES (?, ?, ?)",
+                (user_request_id, weather_data_json, request_datetime)
             )
 
             self.db_connection.commit()

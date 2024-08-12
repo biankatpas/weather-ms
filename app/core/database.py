@@ -9,14 +9,12 @@ def initialize_db():
     conn = get_db_connection()
     with conn:
         conn.execute("CREATE TABLE IF NOT EXISTS user (id TEXT UNIQUE)")
-        # TODO: temperature, humidity, city id -> json
-        # TODO: add request_datetime
         conn.execute("""
             CREATE TABLE IF NOT EXISTS progress (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_request_id TEXT,
-                city_id INTEGER,
-                temperature REAL,
-                humidity REAL,
+                weather_data TEXT,
+                request_datetime TEXT,
                 FOREIGN KEY (user_request_id) REFERENCES user(id)
             )
         """)
