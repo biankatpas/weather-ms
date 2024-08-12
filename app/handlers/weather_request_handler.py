@@ -11,7 +11,7 @@ from app.utils.csv_utils import read_cities_ids_from_csv
 class WeatherRequestHandler(tornado.web.RequestHandler):
     def initialize(self, db_connection):
         self.db_connection = db_connection
-        
+
         self.service = WeatherService(self.db_connection)
 
     async def post(self):
@@ -47,7 +47,7 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         # TODO: get file path from request body
         cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
 
-        _ = await self.service.process(
+        await self.service.process(
             request_uuid=request_uuid,
             user_id=user_id,
             cities_id=cities_id
@@ -56,7 +56,7 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         response = {
             "status": "success",
             "message": "Weather data requested successfully",
-            "request_id": request_uuid
+            "request_uuid": request_uuid
         }
         self.status_code = HTTPStatus.OK
         self.write(response)

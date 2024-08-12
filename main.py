@@ -5,7 +5,7 @@ from decouple import config
 
 from app.handlers import (
     WeatherRequestHandler,
-    WeatherPercentageRequestHandler,
+    WeatherProgressRequestHandler,
     IdRegisterRequestHandler
 )
 
@@ -22,7 +22,7 @@ def make_app():
         [
            (r"/user/register", IdRegisterRequestHandler, dict(db_connection=db_connection)),
            (r"/weather", WeatherRequestHandler, dict(db_connection=db_connection)),
-           (r"/weather/percentage", WeatherPercentageRequestHandler, dict(db_connection=db_connection)),
+           (r"/weather/progress", WeatherProgressRequestHandler, dict(db_connection=db_connection)),
         ],
         debug=True,
         autoreload=True

@@ -6,15 +6,16 @@ class WeatherRepository:
         try:
             cursor = self.db_connection.cursor()
 
-            for city_data in data:
-                item = {
-                    "city_id": city_data['id'],
-                    "temperature": city_data['main']['temp'],
-                    "humidity": city_data['main']['humidity']
-                }
+            item = {
+                "city_id": data['id'],
+                "temperature": data['main']['temp'],
+                "humidity": data['main']['humidity']
+            }
 
-                cursor.execute("INSERT INTO progress (request_uuid, user_id, city_id, temperature, humidity) VALUES (?, ?, ?, ?, ?)",
-                               (request_uuid, user_id, item['city_id'], item['temperature'], item['humidity']))
+            cursor.execute(
+                "INSERT INTO progress (request_uuid, user_id, city_id, temperature, humidity) VALUES (?, ?, ?, ?, ?)",
+                (request_uuid, user_id, item['city_id'], item['temperature'], item['humidity'])
+            )
 
             self.db_connection.commit()
 
@@ -25,5 +26,6 @@ class WeatherRepository:
         finally:
             cursor.close()
 
+    # TODO:
     def store_weather_data_as_json(self, request_uuid, user_id, data):
         pass

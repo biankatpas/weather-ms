@@ -16,7 +16,7 @@ class IdRegisterRequestHandler(tornado.web.RequestHandler):
         cursor.execute("SELECT COUNT(*) FROM user WHERE id = ?", (user_uuid,))
         exists = cursor.fetchone()[0]
 
-        # TODO: implement DB access code in user_storage.py
+        # TODO: implement DB access code in user_repository.py
         if exists:
             self.post()
         else:

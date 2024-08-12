@@ -1,3 +1,3 @@
 from .weather_request_handler import WeatherRequestHandler
-from .weather_percentage_request_handler import WeatherPercentageRequestHandler
+from .weather_progress_request_handler import WeatherProgressRequestHandler
 from .id_register_request_handler import IdRegisterRequestHandler
