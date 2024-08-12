@@ -17,9 +17,10 @@ This microservice provides endpoints for requesting weather data and checking th
 
 **Description:**
 
-* Validates the user_request_id to ensure it exists in the database and is unique for the request.
-* Reads city IDs from a CSV file and fetches weather data for these cities from the OpenWeather API.
-* Stores the weather data in the database under the given user_request_id.
+* Validates the `user_request_id` to ensure it exists in the database and is unique for the request.
+* Reads city IDs from a CSV file located in the `app/resources` folder and fetches weather data for these cities from the OpenWeather API.
+* Automatically handles the reading of the city IDs from the specified CSV file.
+* Stores the weather data in the database under the given `user_request_id`.
 
 **Request Body:**
 
