@@ -97,5 +97,5 @@ Note: If the `.env` file is not correctly configured or the Docker container is 
 
 ## Running Tests
 
-Unit tests are currently under development. Once available, they will be located in the `tests` directory of the project. Please check back later for updates on how to run and use the test suite.
+Unit tests are currently under development. Once available, they will be located in the `app/tests` directory of the project. Please check back later for updates on how to run and use the test suite.
 
