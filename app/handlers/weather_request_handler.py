@@ -1,4 +1,3 @@
-import uuid
 import tornado.web
 import tornado.escape
 
@@ -50,13 +49,14 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
 
         if request_id_exists:
             self.set_status(HTTPStatus.CONFLICT)
-            self.write({"error": "Request ID already exists. Please generate a new ID."})
+            self.write({"error": "user_request_id already exists. Please generate a new ID."})
             return
 
         # TODO: get file path from request body
         cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
 
-        await self.service.process(
+        # TODO: return weather data
+        _ = await self.service.process(
             user_request_id=user_request_id,
             cities_id=cities_id
         )
@@ -64,6 +64,9 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         response = {
             "status": "success",
             "message": "weather data requested successfully",
+            "data": {}
         }
+
         self.status_code = HTTPStatus.OK
+
         self.write(response)

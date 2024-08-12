@@ -44,8 +44,11 @@ class WeatherProgressRequestHandler(tornado.web.RequestHandler):
         progress_percentage = (completed / total * 100) if total > 0 else 0
 
         response = {
-            "user_request_id": user_request_id,
-            "progress_percentage": progress_percentage
+            "status": "success",
+            "message": "weather progress percentage requested successfully",
+            "data": {"progress_percentage": progress_percentage}
         }
+
         self.set_status(HTTPStatus.OK)
+
         self.write(response)
