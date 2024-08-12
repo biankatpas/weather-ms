@@ -5,15 +5,14 @@ import tornado.escape
 from http import HTTPStatus
 
 from app.services.weather_service import WeatherService
-from app.storage.weather_storage import WeatherStorage
 from app.utils.csv_utils import read_cities_ids_from_csv
 
 
 class WeatherRequestHandler(tornado.web.RequestHandler):
     def initialize(self, db_connection):
         self.db_connection = db_connection
-        self.storage = WeatherStorage(db_connection)
-        self.service = WeatherService()
+        
+        self.service = WeatherService(self.db_connection)
 
     async def post(self):
         if not self.request.body:
@@ -48,12 +47,10 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         # TODO: get file path from request body
         cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
 
-        weather_data = await self.service.get_weather_by_cities_id(
+        _ = await self.service.process(
+            request_uuid=request_uuid,
+            user_id=user_id,
             cities_id=cities_id
-        )
-
-        self.storage.store_weather_data_as_json(
-            user_id=user_id, request_uuid=request_uuid, data=weather_data
         )
 
         response = {

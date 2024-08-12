@@ -1,8 +1,8 @@
-class WeatherStorage:
+class WeatherRepository:
     def __init__(self, db_connection):
         self.db_connection = db_connection
 
-    def store_weather_data_as_json(self, request_uuid, user_id, data):
+    def store_weather_data_on_db(self, request_uuid, user_id, data):
         try:
             cursor = self.db_connection.cursor()
 
@@ -24,3 +24,6 @@ class WeatherStorage:
 
         finally:
             cursor.close()
+
+    def store_weather_data_as_json(self, request_uuid, user_id, data):
+        pass
