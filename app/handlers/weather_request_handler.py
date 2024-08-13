@@ -34,7 +34,7 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
                 {"error": "user_request_id field is required"}
             )
             return
-
+        # TODO: move db access to repository
         cursor = self.db_connection.cursor()
         cursor.execute("SELECT COUNT(*) FROM user WHERE id = ?", (user_request_id,))
         exists = cursor.fetchone()[0]
@@ -44,6 +44,7 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
             self.write({"error": "User ID does not exist"})
             return
 
+        # TODO: move db access to repository
         cursor.execute("SELECT COUNT(*) FROM progress WHERE user_request_id = ?", (user_request_id,))
         request_id_exists = cursor.fetchone()[0]
 
@@ -55,8 +56,10 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         # TODO: get file path from request body
         cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
 
+        # TODO: save total items to process in request table
+
         # TODO: return weather data
-        _ = await self.service.process(
+        _ = await self.service.fetch_cities_weather_data(
             user_request_id=user_request_id,
             cities_id=cities_id
         )
