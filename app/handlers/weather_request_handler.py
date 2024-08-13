@@ -3,6 +3,7 @@ import tornado.escape
 
 from http import HTTPStatus
 
+from app.services.request_service import RequestService
 from app.services.weather_service import WeatherService
 from app.services.weather_progress_service import WeatherProgressService
 from app.utils.csv_utils import read_cities_ids_from_csv
@@ -12,6 +13,7 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
     def initialize(self, db_connection):
         self.db_connection = db_connection
 
+        self.request_service = RequestService(self.db_connection)
         self.weather_service = WeatherService(self.db_connection)
         self.weather_progress_service = WeatherProgressService(self.db_connection)
 
@@ -37,10 +39,10 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
             )
             return
 
-        request_uuid_exists = self.weather_service.request_uuid_exists(user_request_id)
+        request_uuid_exists = self.request_service.request_uuid_exists(user_request_id)
         if not request_uuid_exists:
             self.set_status(HTTPStatus.NOT_FOUND)
-            self.write({"error": "user_request_id does not exist, please generate it"})
+            self.write({"error": "user_request_id does not exist, please generate one"})
             return
 
         request_uuid_in_progress = self.weather_progress_service.request_uuid_exists(user_request_id)

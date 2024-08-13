@@ -8,12 +8,9 @@ class RequestService:
 
     # TODO: rename it
     def process(self, user_uuid):
-        if not self.repository.request_uuid_exists(user_uuid):
-            self.repository.store_request_data_on_db(
-                user_uuid=user_uuid
-            )
-            return True
-        return False
+        self.repository.store_request_data_on_db(
+            user_uuid=user_uuid
+        )
 
     def request_uuid_exists(self, user_uuid):
         return self.repository.request_uuid_exists(user_uuid)
