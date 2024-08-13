@@ -11,6 +11,12 @@ class RequestService:
         self.repository.store_request_data_on_db(
             user_uuid=user_uuid
         )
+      
+    def store_total_items(self, user_uuid, totals):
+        self.repository.store_request_total_items_to_process(
+            user_uuid=user_uuid,
+            totals=totals
+        )
 
     def request_uuid_exists(self, user_uuid):
         return self.repository.request_uuid_exists(user_uuid)

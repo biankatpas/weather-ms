@@ -48,13 +48,16 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         request_uuid_in_progress = self.weather_progress_service.request_uuid_exists(user_request_id)
         if request_uuid_in_progress:
             self.set_status(HTTPStatus.CONFLICT)
-            self.write({"error": "user_request_id already exists in progress, please generate a new one"})
+            self.write({"error": "user_request_id already used, please generate a new one"})
             return
 
         # TODO: get file path from request body
         cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
 
-        # TODO: save total items to process in request table
+        self.request_service.store_total_items(
+            user_uuid=user_request_id,
+            totals=len(cities_id)
+        )
 
         # TODO: return weather data
         _ = await self.weather_service.fetch_cities_weather_data(

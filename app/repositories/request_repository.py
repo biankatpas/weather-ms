@@ -17,6 +17,21 @@ class RequestRepository:
         finally:
             cursor.close()
 
+    def store_request_total_items_to_process(self, user_uuid, totals):
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute("UPDATE request SET total = ? WHERE id = ?", (totals, user_uuid))
+            if cursor.rowcount == 0:
+                cursor.execute("INSERT INTO request (id, total) VALUES (?, ?)", (user_uuid, totals))
+            self.db_connection.commit()
+        except sqlite3.IntegrityError as e:
+            print(f"IntegrityError: {e} - user_uuid might already exist.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            self.db_connection.rollback()
+        finally:
+            cursor.close()
+
     def request_uuid_exists(self, user_uuid):
         try:
             cursor = self.db_connection.cursor()
