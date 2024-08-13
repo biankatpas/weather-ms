@@ -55,13 +55,13 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
 
         self.request_service.store_total_items(
-            user_uuid=user_request_id,
+            uuid=user_request_id,
             totals=len(cities_id)
         )
 
         # TODO: return weather data
         _ = await self.weather_service.fetch_cities_weather_data(
-            user_request_id=user_request_id,
+            uuid=user_request_id,
             cities_id=cities_id
         )
 

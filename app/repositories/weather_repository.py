@@ -7,7 +7,7 @@ class WeatherRepository:
     def __init__(self, db_connection):
         self.db_connection = db_connection
 
-    def store_weather_data_on_db(self, user_request_id, data):
+    def store_weather_data_on_db(self, uuid, data):
         try:
             cursor = self.db_connection.cursor()
             request_datetime = datetime.utcnow().isoformat()
@@ -22,7 +22,7 @@ class WeatherRepository:
 
             cursor.execute(
                 "INSERT INTO progress (user_request_id, weather_data, request_datetime) VALUES (?, ?, ?)",
-                (user_request_id, weather_data_json, request_datetime)
+                (uuid, weather_data_json, request_datetime)
             )
 
             self.db_connection.commit()

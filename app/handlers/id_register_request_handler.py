@@ -15,7 +15,7 @@ class IdRegisterRequestHandler(tornado.web.RequestHandler):
 
     async def post(self):
         user_uuid = str(uuid.uuid4())
-        self.service.process(user_uuid)
+        self.service.store_request_uuid(user_uuid)
 
         response = {
             "status": "success",

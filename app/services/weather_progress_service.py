@@ -9,11 +9,11 @@ class WeatherProgressService:
         self.request_repository = RequestRepository(self.db_connection)
 
     # TODO: rename it
-    def process(self, user_request_id):
-        completed = self.weather_progress_repository.user_request_data_already_processed(user_request_id)
-        total = self.request_repository.get_request_total_items_to_process(user_request_id)
+    def process(self, uuid):
+        completed = self.weather_progress_repository.user_request_data_already_processed(uuid)
+        total = self.request_repository.get_request_total_items_to_process(uuid)
 
         return completed, total
 
-    def request_uuid_exists(self, user_request_id):
-        return self.weather_progress_repository.request_uuid_exists(user_request_id)
+    def request_uuid_exists(self, uuid):
+        return self.weather_progress_repository.request_uuid_exists(uuid)
