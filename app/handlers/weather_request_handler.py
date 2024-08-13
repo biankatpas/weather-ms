@@ -36,12 +36,12 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
             return
         # TODO: move db access to repository
         cursor = self.db_connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM user WHERE id = ?", (user_request_id,))
+        cursor.execute("SELECT COUNT(*) FROM request WHERE id = ?", (user_request_id,))
         exists = cursor.fetchone()[0]
 
         if not exists:
             self.set_status(HTTPStatus.NOT_FOUND)
-            self.write({"error": "User ID does not exist"})
+            self.write({"error": "user_request_id does not exist"})
             return
 
         # TODO: move db access to repository

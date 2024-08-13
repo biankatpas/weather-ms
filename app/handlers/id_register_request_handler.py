@@ -3,7 +3,7 @@ import tornado.web
 
 from http import HTTPStatus
 
-from app.services.user_service import UserService
+from app.services.user_service import RequestService
 
 
 class IdRegisterRequestHandler(tornado.web.RequestHandler):
@@ -11,7 +11,7 @@ class IdRegisterRequestHandler(tornado.web.RequestHandler):
     def initialize(self, db_connection):
         self.db_connection = db_connection
 
-        self.service = UserService(self.db_connection)
+        self.service = RequestService(self.db_connection)
 
     async def post(self):
         user_uuid = str(uuid.uuid4())

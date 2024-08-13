@@ -1,8 +1,8 @@
-class UserRepository:
+class RequestRepository:
     def __init__(self, db_connection):
         self.db_connection = db_connection
 
-    def store_user_data_on_db(self, user_uuid):
+    def store_request_data_on_db(self, user_uuid):
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("INSERT INTO request (id) VALUES (?)", (user_uuid,))
@@ -13,7 +13,7 @@ class UserRepository:
         finally:
             cursor.close()
 
-    def user_uuid_already_exists(self, user_uuid):
+    def request_uuid_exists(self, user_uuid):
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("SELECT COUNT(*) FROM request WHERE id = ?", (user_uuid,))
