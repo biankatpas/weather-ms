@@ -8,8 +8,7 @@ class WeatherProgressService:
         self.weather_progress_repository = WeatherProgressRepository(self.db_connection)
         self.request_repository = RequestRepository(self.db_connection)
 
-    # TODO: rename it
-    def process(self, uuid):
+    def get_progress_status(self, uuid):
         completed = self.weather_progress_repository.user_request_data_already_processed(uuid)
         total = self.request_repository.get_request_total_items_to_process(uuid)
 
