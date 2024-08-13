@@ -1,7 +1,5 @@
 # Technical Decisions
 
-## Python Backend Tech Test
-
 ## Introduction
 
 The main purpose of this document is to describe the decisions regarding the tools and frameworks used to address the proposed technical test.
