@@ -22,18 +22,23 @@ class WeatherService:
     async def fetch_cities_weather_data(self, uuid, cities_id, units="metric"):
         async with aiohttp.ClientSession() as session:
             tasks = []
+            weather_data = []
+
             for city_id in cities_id:
                 url = f"{self.weather_api_endpoint}?id={city_id}&appid={self.api_key}&units={units}"
                 tasks.append(self.__fetch_city_weather_data(session, url, uuid))
 
                 if len(tasks) >= self.limit:
                     results = await asyncio.gather(*tasks)
-                    tasks = []  # Reset tasks
+                    weather_data.extend(results)
+                    tasks = []
                     await asyncio.sleep(self.delay)
 
             if tasks:
                 results = await asyncio.gather(*tasks)
-                return results
+                weather_data.extend(results)
+
+        return weather_data
 
     async def __fetch_city_weather_data(self, session, url, uuid):
         try:

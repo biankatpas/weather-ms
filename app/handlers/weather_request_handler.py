@@ -61,18 +61,34 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
             totals=len(cities_id)
         )
 
-        # TODO: return weather data
-        _ = await self.weather_service.fetch_cities_weather_data(
+        weather_data = await self.weather_service.fetch_cities_weather_data(
             uuid=user_request_id,
             cities_id=cities_id
         )
 
+        weather_response = self.__format_weather_data(weather_data)
+
         response = {
             "status": "success",
             "message": "weather data requested successfully",
-            "data": {}
+            "data": weather_response
         }
 
         self.status_code = HTTPStatus.OK
 
         self.write(response)
+
+    def __format_weather_data(self, weather_data):
+        weather_response = []
+        for data in weather_data:
+            city_id = data.get('id')
+            temperature = data.get('main', {}).get('temp')
+            humidity = data.get('main', {}).get('humidity')
+
+            weather_response.append({
+                "city_id": city_id,
+                "temperature": temperature,
+                "humidity": humidity
+            })
+
+        return weather_response
