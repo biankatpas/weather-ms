@@ -3,7 +3,7 @@ import tornado.web
 
 from http import HTTPStatus
 
-from app.services.user_service import RequestService
+from app.services.request_service import RequestService
 
 
 class IdRegisterRequestHandler(tornado.web.RequestHandler):
