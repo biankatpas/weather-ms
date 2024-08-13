@@ -43,10 +43,6 @@ class WeatherProgressRequestHandler(tornado.web.RequestHandler):
         self.write(response)
 
     def __get_progress_percentage(self, user_request_id):
-        # TODO: get total from cities id list
-        mock_total = 167
-
-        total = mock_total
-        completed = self.service.process(user_request_id)
+        completed, total = self.service.process(user_request_id)
 
         return (completed / total * 100) if total > 0 else 0

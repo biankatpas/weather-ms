@@ -8,7 +8,12 @@ def get_db_connection():
 def initialize_db():
     conn = get_db_connection()
     with conn:
-        conn.execute("CREATE TABLE IF NOT EXISTS user (id TEXT UNIQUE)")
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS request (
+                id TEXT UNIQUE,
+                total INTEGER
+            )
+        """)
         conn.execute("""
             CREATE TABLE IF NOT EXISTS progress (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
