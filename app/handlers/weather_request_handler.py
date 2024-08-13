@@ -4,6 +4,7 @@ import tornado.escape
 from http import HTTPStatus
 
 from app.services.weather_service import WeatherService
+from app.services.weather_progress_service import WeatherProgressService
 from app.utils.csv_utils import read_cities_ids_from_csv
 
 
@@ -11,7 +12,8 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
     def initialize(self, db_connection):
         self.db_connection = db_connection
 
-        self.service = WeatherService(self.db_connection)
+        self.weather_service = WeatherService(self.db_connection)
+        self.weather_progress_service = WeatherProgressService(self.db_connection)
 
     async def post(self):
         if not self.request.body:
@@ -34,21 +36,15 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
                 {"error": "user_request_id field is required"}
             )
             return
-        # TODO: move db access to repository
-        cursor = self.db_connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM request WHERE id = ?", (user_request_id,))
-        exists = cursor.fetchone()[0]
 
-        if not exists:
+        request_uuid_exists = self.weather_service.request_uuid_exists(user_request_id)
+        if not request_uuid_exists:
             self.set_status(HTTPStatus.NOT_FOUND)
             self.write({"error": "user_request_id does not exist"})
             return
 
-        # TODO: move db access to repository
-        cursor.execute("SELECT COUNT(*) FROM progress WHERE user_request_id = ?", (user_request_id,))
-        request_id_exists = cursor.fetchone()[0]
-
-        if request_id_exists:
+        request_uuid_in_progress = self.weather_progress_service.request_uuid_exists(user_request_id)
+        if request_uuid_in_progress:
             self.set_status(HTTPStatus.CONFLICT)
             self.write({"error": "user_request_id already exists. Please generate a new ID."})
             return
@@ -59,7 +55,7 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         # TODO: save total items to process in request table
 
         # TODO: return weather data
-        _ = await self.service.fetch_cities_weather_data(
+        _ = await self.weather_service.fetch_cities_weather_data(
             user_request_id=user_request_id,
             cities_id=cities_id
         )

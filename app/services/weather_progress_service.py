@@ -14,3 +14,5 @@ class WeatherProgressService:
 
         return completed, total
 
+    def request_uuid_exists(self, user_request_id):
+        return self.weather_progress_repository.request_uuid_exists(user_request_id)

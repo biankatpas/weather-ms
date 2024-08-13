@@ -13,3 +13,6 @@ class RequestService:
             )
             return True
         return False
+
+    def request_uuid_exists(self, user_uuid):
+        return self.repository.request_uuid_exists(user_uuid)
