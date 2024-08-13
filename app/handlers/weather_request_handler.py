@@ -40,13 +40,13 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
         request_uuid_exists = self.weather_service.request_uuid_exists(user_request_id)
         if not request_uuid_exists:
             self.set_status(HTTPStatus.NOT_FOUND)
-            self.write({"error": "user_request_id does not exist"})
+            self.write({"error": "user_request_id does not exist, please generate it"})
             return
 
         request_uuid_in_progress = self.weather_progress_service.request_uuid_exists(user_request_id)
         if request_uuid_in_progress:
             self.set_status(HTTPStatus.CONFLICT)
-            self.write({"error": "user_request_id already exists. Please generate a new ID."})
+            self.write({"error": "user_request_id already exists in progress, please generate a new one"})
             return
 
         # TODO: get file path from request body

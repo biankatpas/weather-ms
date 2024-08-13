@@ -2,6 +2,7 @@ class WeatherProgressRepository:
     def __init__(self, db_connection):
         self.db_connection = db_connection
 
+    # TODO: try catch
     def user_request_data_already_processed(self, user_request_id):
         cursor = self.db_connection.cursor()
         cursor.execute(
