@@ -2,13 +2,13 @@ from http import HTTPStatus
 
 import tornado.web
 
-from app.services.weather_service import WeatherService
+from app.services.weather_progress_service import WeatherProgressService
 
 
 class WeatherProgressRequestHandler(tornado.web.RequestHandler):
     def initialize(self, db_connection):
         self.db_connection = db_connection
-        self.service = WeatherService(self.db_connection)
+        self.service = WeatherProgressService(self.db_connection)
 
     def get(self):
         if not self.request.body:
@@ -30,18 +30,7 @@ class WeatherProgressRequestHandler(tornado.web.RequestHandler):
             self.write({"error": "user_request_id field is required"})
             return
 
-        # TODO: implement DB access code in progress_repository.py
-        cursor = self.db_connection.cursor()
-        cursor.execute(
-            "SELECT COUNT(*) FROM progress WHERE user_request_id = ?", (user_request_id,)
-        )
-        completed = cursor.fetchone()[0]
-
-        # TODO: get total from cities id list
-        mock_total = 167
-        total = mock_total
-
-        progress_percentage = (completed / total * 100) if total > 0 else 0
+        progress_percentage = self.__get_progress_percentage(user_request_id)
 
         response = {
             "status": "success",
@@ -52,3 +41,12 @@ class WeatherProgressRequestHandler(tornado.web.RequestHandler):
         self.set_status(HTTPStatus.OK)
 
         self.write(response)
+
+    def __get_progress_percentage(self, user_request_id):
+        # TODO: get total from cities id list
+        mock_total = 167
+
+        total = mock_total
+        completed = self.service.process(user_request_id)
+
+        return (completed / total * 100) if total > 0 else 0
