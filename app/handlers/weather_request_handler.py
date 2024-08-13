@@ -2,6 +2,7 @@ import tornado.web
 import tornado.escape
 
 from http import HTTPStatus
+from decouple import config
 
 from app.services.request_service import RequestService
 from app.services.weather_service import WeatherService
@@ -12,7 +13,7 @@ from app.utils.csv_utils import read_cities_ids_from_csv
 class WeatherRequestHandler(tornado.web.RequestHandler):
     def initialize(self, db_connection):
         self.db_connection = db_connection
-
+        self.cities_file_path = config('CITIES_FILE_PATH', default="app/resources/cities_id_list.csv")
         self.request_service = RequestService(self.db_connection)
         self.weather_service = WeatherService(self.db_connection)
         self.weather_progress_service = WeatherProgressService(self.db_connection)
@@ -51,8 +52,9 @@ class WeatherRequestHandler(tornado.web.RequestHandler):
             self.write({"error": "user_request_id already used, please generate a new one"})
             return
 
-        # TODO: get file path from request body
-        cities_id = read_cities_ids_from_csv(file_path="app/resources/cities_id_list.csv")
+        cities_id = read_cities_ids_from_csv(
+            file_path=self.cities_file_path
+        )
 
         self.request_service.store_total_items(
             uuid=user_request_id,
