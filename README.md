@@ -10,7 +10,7 @@ This microservice provides endpoints for requesting weather data and checking th
 
 **Request Body:**
 - **None:** This endpoint does not require any parameters in the request body.
-  
+
 ### 2. **POST /weather**
 
 **Purpose:** Request weather data for a list of cities.
@@ -56,7 +56,7 @@ Follow these steps to run the Weather Microservice using Docker:
 Before starting the project, ensure you have the following:
 
 - **Docker**: Make sure Docker is installed on your machine. You can download it from [Docker's official website](https://www.docker.com/get-started).
-- **OpenWeather API Key**: Register for an API key from OpenWeather at [OpenWeather API](https://openweathermap.org/api). 
+- **OpenWeather API Key**: Register for an API key from OpenWeather at [OpenWeather API](https://openweathermap.org/api).
 
 ### 2. Clone the Repository
 
@@ -99,6 +99,8 @@ Note: If the `.env` file is not correctly configured or the Docker container is 
 ## Running Tests
 
 Unit tests are currently under development. Once available, they will be located in the `app/tests` directory of the project. Please check back later for updates on how to run and use the test suite.
+
+`docker-compose run test`
 
 ## Technical Decision Documentation
 
