@@ -96,9 +96,9 @@ Ensure that you include the correct `user_request_id` in the request body when u
 
 Note: If the `.env` file is not correctly configured or the Docker container is not running, the endpoints will not be accessible.
 
-## Running Tests
+## Running Tests (currently under development)
 
-Unit tests are currently under development. Once available, they will be located in the `app/tests` directory of the project. Please check back later for updates on how to run and use the test suite.
+Navigate to the root directory of the project and run the following command:
 
 `docker-compose run test`
 
