@@ -30,7 +30,7 @@ This microservice provides endpoints for requesting weather data and checking th
 }
 ```
 
-### 3. GET /weather/progress
+### 3. GET /weather/progress/{user_request_id}
 
 **Purpose:** Retrieve the progress of a specific weather request.
 
@@ -40,13 +40,10 @@ This microservice provides endpoints for requesting weather data and checking th
 * The response includes the percentage of cities for which weather data has been collected.
 * If the `user_request_id` is missing, invalid, or does not exist, appropriate error messages are returned.
 
-**Request Body:**
+**Request Parameter:**
 
-```json
-{
-  "user_request_id": "string"  // Unique identifier for the request
-}
-```
+- `user_request_id` (path parameter): A unique identifier for the request.
+  
 ## Running the Project
 
 Follow these steps to run the Weather Microservice using Docker:
