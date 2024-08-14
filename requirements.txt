@@ -12,6 +12,8 @@ pytest-asyncio>=0.20,<1.0
 
 # HTTP requests for tests
 aiohttp>=3.8,<4.0
+responses>=0.18,<0.19
+aioresponses>=0.7,<0.9
 
 # Environment variable management
 python-decouple>=3.8,<4.0
