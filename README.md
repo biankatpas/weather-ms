@@ -109,6 +109,9 @@ docker-compose exec -it weather-ms /bin/bash
 ```bash
 pytest
 ```
+```bash
+pytest --cov --cov-report=term
+```
 
 ## Technical Decision Documentation
 
