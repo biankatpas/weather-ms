@@ -8,8 +8,8 @@ class WeatherRepository:
         self.db_connection = db_connection
 
     def store_weather_data_on_db(self, uuid, data):
+        cursor = self.db_connection.cursor()
         try:
-            cursor = self.db_connection.cursor()
             request_datetime = datetime.utcnow().isoformat()
 
             item = {

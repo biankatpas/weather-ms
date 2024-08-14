@@ -5,8 +5,8 @@ class RequestRepository:
         self.db_connection = db_connection
 
     def store_request_uuid_to_process(self, uuid):
+        cursor = self.db_connection.cursor()
         try:
-            cursor = self.db_connection.cursor()
             cursor.execute("INSERT INTO request (id) VALUES (?)", (uuid,))
             self.db_connection.commit()
         except sqlite3.IntegrityError as e:
@@ -18,8 +18,8 @@ class RequestRepository:
             cursor.close()
 
     def store_request_total_items_to_process(self, uuid, totals):
+        cursor = self.db_connection.cursor()
         try:
-            cursor = self.db_connection.cursor()
             cursor.execute("UPDATE request SET total = ? WHERE id = ?", (totals, uuid))
             if cursor.rowcount == 0:
                 cursor.execute("INSERT INTO request (id, total) VALUES (?, ?)", (uuid, totals))
@@ -33,8 +33,8 @@ class RequestRepository:
             cursor.close()
 
     def request_uuid_exists(self, uuid):
+        cursor = self.db_connection.cursor()
         try:
-            cursor = self.db_connection.cursor()
             cursor.execute("SELECT COUNT(*) FROM request WHERE id = ?", (uuid,))
             result = cursor.fetchone()
             return result[0] > 0
@@ -45,8 +45,8 @@ class RequestRepository:
             cursor.close()
 
     def get_request_total_items_to_process(self, uuid):
+        cursor = self.db_connection.cursor()
         try:
-            cursor = self.db_connection.cursor()
             cursor.execute("SELECT total FROM request WHERE id = ?", (uuid,))
             result = cursor.fetchone()
             if result is None or result[0] is None:

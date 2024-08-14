@@ -1,6 +1,6 @@
-from http import HTTPStatus
-
 import tornado.web
+
+from http import HTTPStatus
 
 from app.services.weather_progress_service import WeatherProgressService
 
@@ -11,19 +11,7 @@ class WeatherProgressRequestHandler(tornado.web.RequestHandler):
         self.service = WeatherProgressService(self.db_connection)
 
     def get(self):
-        if not self.request.body:
-            self.set_status(HTTPStatus.BAD_REQUEST)
-            self.write({"error": "Request body cannot be empty"})
-            return
-
-        request_body = self.request.body.decode('utf-8')
-        try:
-            request_data = tornado.escape.json_decode(request_body)
-            user_request_id = request_data.get("user_request_id")
-        except ValueError as e:
-            self.set_status(HTTPStatus.BAD_REQUEST)
-            self.write({"error": "Invalid JSON", "message": str(e)})
-            return
+        user_request_id = self.get_query_argument("user_request_id", None)
 
         if not user_request_id:
             self.set_status(HTTPStatus.BAD_REQUEST)
@@ -39,10 +27,8 @@ class WeatherProgressRequestHandler(tornado.web.RequestHandler):
         }
 
         self.set_status(HTTPStatus.OK)
-
         self.write(response)
 
     def __get_progress_percentage(self, user_request_id):
         completed, total = self.service.get_progress_status(user_request_id)
-
         return (completed / total * 100) if total > 0 else 0

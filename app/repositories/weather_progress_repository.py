@@ -3,8 +3,8 @@ class WeatherProgressRepository:
         self.db_connection = db_connection
 
     def user_request_data_already_processed(self, uuid):
+        cursor = self.db_connection.cursor()
         try:
-            cursor = self.db_connection.cursor()
             cursor.execute("SELECT COUNT(*) FROM progress WHERE user_request_id = ?", (uuid,))
             result = cursor.fetchone()
             return result[0] if result else 0
@@ -15,8 +15,8 @@ class WeatherProgressRepository:
             cursor.close()
 
     def request_uuid_exists(self, uuid):
+        cursor = self.db_connection.cursor()
         try:
-            cursor = self.db_connection.cursor()
             cursor.execute("SELECT COUNT(*) FROM progress WHERE user_request_id = ?", (uuid,))
             result = cursor.fetchone()
             return result[0] > 0
