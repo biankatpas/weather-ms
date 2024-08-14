@@ -2,7 +2,7 @@ import uuid
 import json
 import pytest
 
-from app.core.database import get_db_connection, initialize_db
+from app.fixtures.database_fixture import get_db_connection, initialize_db
 from app.repositories.weather_repository import WeatherRepository
 
 
@@ -14,8 +14,8 @@ def db_connection():
     conn.close()
 
     import os
-    if os.path.exists('weather_ms.db'):
-        os.remove('weather_ms.db')
+    if os.path.exists('app/tests/weather_ms.db'):
+        os.remove('app/tests/weather_ms.db')
 
 
 @pytest.fixture

@@ -11,12 +11,3 @@ services:
     command: python main.py
     volumes:
       - .:/app
-
-  test:
-    build: .
-    container_name: weather-ms-test
-    command: pytest
-    volumes:
-      - .:/app
-    environment:
-      - API_KEY=${API_KEY}

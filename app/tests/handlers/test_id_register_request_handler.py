@@ -9,7 +9,7 @@ from unittest.mock import MagicMock
 
 from app.handlers.id_register_request_handler import IdRegisterRequestHandler
 from app.services.request_service import RequestService
-from app.core.database import get_db_connection, initialize_db
+from app.fixtures.database_fixture import get_db_connection, initialize_db
 
 
 class TestIdRegisterRequestHandler(tornado.testing.AsyncHTTPTestCase):
@@ -22,7 +22,7 @@ class TestIdRegisterRequestHandler(tornado.testing.AsyncHTTPTestCase):
         return Application([
             (r"/user-register", IdRegisterRequestHandler, dict(db_connection=self.db_connection)),
         ])
-    
+
     # TODO:
     # async def test_post_register_id(self):
     #     response = await self.fetch("/register-id", method="POST")

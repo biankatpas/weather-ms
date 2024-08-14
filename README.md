@@ -100,7 +100,15 @@ Note: If the `.env` file is not correctly configured or the Docker container is 
 
 Navigate to the root directory of the project and run the following command:
 
-`docker-compose run test`
+```bash
+docker-compose up --build
+```
+```bash
+docker-compose exec -it weather-ms /bin/bash
+```
+```bash
+pytest
+```
 
 ## Technical Decision Documentation
 

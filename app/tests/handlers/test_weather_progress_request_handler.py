@@ -11,7 +11,7 @@ from app.repositories.weather_repository import WeatherRepository
 from app.repositories.weather_progress_repository import WeatherProgressRepository
 from app.repositories.request_repository import RequestRepository
 from app.services.weather_progress_service import WeatherProgressService
-from app.core.database import get_db_connection, initialize_db
+from app.fixtures.database_fixture import get_db_connection, initialize_db
 
 
 @pytest.fixture
