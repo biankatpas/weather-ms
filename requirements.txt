@@ -7,7 +7,8 @@ numpy>=1.25,<1.26
 
 # Testing framework
 pytest>=7.4,<8.0
-pytest-cov>=4.0,<5.0 
+pytest-cov>=4.0,<5.0
+pytest-asyncio>=0.20,<1.0
 
 # HTTP requests for tests
 aiohttp>=3.8,<4.0
