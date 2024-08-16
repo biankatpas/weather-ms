@@ -1,7 +1,5 @@
 import uuid
-import pytest
 import json
-import pytest_asyncio
 import tornado.escape
 
 from unittest.mock import MagicMock, patch, AsyncMock
@@ -11,8 +9,6 @@ from tornado.testing import AsyncHTTPTestCase, gen_test
 
 from app.fixtures.database_fixture import get_db_connection, initialize_db
 from app.handlers.weather_request_handler import WeatherRequestHandler
-from app.repositories.request_repository import RequestRepository
-from app.repositories.weather_repository import WeatherRepository
 from app.services.weather_service import WeatherService
 
 
