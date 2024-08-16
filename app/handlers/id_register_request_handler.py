@@ -14,15 +14,19 @@ class IdRegisterRequestHandler(tornado.web.RequestHandler):
         self.service = RequestService(self.db_connection)
 
     async def post(self):
-        user_uuid = str(uuid.uuid4())
-        self.service.store_request_uuid(user_uuid)
-
-        response = {
-            "status": "success",
-            "message": "user request id registered successfully",
-            "data": {"user_request_id": user_uuid}
-        }
-
-        self.status_code = HTTPStatus.OK
-
-        self.write(response)
+        try:
+            user_uuid = str(uuid.uuid4())
+            self.service.store_request_uuid(user_uuid)
+            response = {
+                "status": "success",
+                "message": "user request id registered successfully",
+                "data": {"user_request_id": user_uuid}
+            }
+            self.set_status(HTTPStatus.OK)
+            self.write(response)
+        except Exception as e:
+            self.set_status(HTTPStatus.INTERNAL_SERVER_ERROR)
+            self.write({
+                "status": "error",
+                "message": str(e)
+            })

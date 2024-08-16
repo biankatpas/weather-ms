@@ -1,17 +1,16 @@
 import pytest
-
+import pytest_asyncio
 import tornado.escape
-import tornado.testing
 
+from unittest.mock import MagicMock, patch
 from tornado.web import Application
-from unittest.mock import MagicMock
+from tornado.testing import AsyncHTTPTestCase
+from tornado.testing import gen_test
 
-from app.handlers.weather_progress_request_handler import WeatherProgressRequestHandler
-from app.repositories.weather_repository import WeatherRepository
-from app.repositories.weather_progress_repository import WeatherProgressRepository
-from app.repositories.request_repository import RequestRepository
-from app.services.weather_progress_service import WeatherProgressService
 from app.fixtures.database_fixture import get_db_connection, initialize_db
+from app.handlers.weather_progress_request_handler import WeatherProgressRequestHandler
+from app.repositories.request_repository import RequestRepository
+from app.repositories.weather_repository import WeatherRepository
 
 
 @pytest.fixture
@@ -21,55 +20,68 @@ def db_connection():
     yield conn
     conn.close()
 
-class TestWeatherProgressRequestHandler(tornado.testing.AsyncHTTPTestCase):
+    import os
+    if os.path.exists('app/tests/weather_ms.db'):
+        os.remove('app/tests/weather_ms.db')
+
+
+class WeatherProgressRequestHandlerTestCase(AsyncHTTPTestCase):
 
     def get_app(self):
+        self.mock_cursor = MagicMock()
+        self.mock_db_connection = MagicMock()
+        self.mock_db_connection.cursor.return_value = self.mock_cursor
+
         return Application([
-            (r"/weather-progress", WeatherProgressRequestHandler, dict(db_connection=db_connection)),
+            (r"/weather/progress", WeatherProgressRequestHandler, dict(db_connection=self.mock_db_connection)),
         ])
 
-    def setUp(self):
-        super().setUp()
-        self.db_connection = db_connection
-        self.weather_repository = WeatherRepository(self.db_connection)
-        self.weather_progress_repository = WeatherProgressRepository(self.db_connection)
-        self.request_repository = RequestRepository(self.db_connection)
-        self.weather_progress_service = WeatherProgressService(self.db_connection)
-
-        self.weather_repository.store_weather_data_on_db = MagicMock()
-        self.request_repository.get_request_total_items_to_process = MagicMock(return_value=10)
-        self.weather_progress_repository.user_request_data_already_processed = MagicMock(return_value=5)
-
-    def test_get_progress_status_no_request_id(self):
-        response = self.fetch("/weather-progress", method="GET")
+    @gen_test
+    async def test_get_progress_status_no_request_id(self):
+        response = await self.http_client.fetch(
+            self.get_url("/weather/progress"),
+            method='GET',
+            raise_error=False
+        )
 
         response_json = tornado.escape.json_decode(response.body)
 
-        self.assertEqual(response.code, 400)
-        self.assertEqual(response_json["error"], "user_request_id field is required")
+        assert response.code == 400
+        assert response_json['error'] == "user_request_id field is required"
 
-    # TODO
-    # def test_get_progress_status_success(self):
-    #     mock_uuid = "test-uuid"
 
-    #     self.request_repository.store_request_uuid_to_process(mock_uuid)
-    #     self.request_repository.store_request_total_items_to_process(mock_uuid, 10)
+    @gen_test
+    async def test_get_progress_status_success(self):
+        mock_uuid = "test-uuid"
 
-    #     self.weather_repository.store_weather_data_on_db(
-    #         mock_uuid,
-    #         {
-    #             'id': 123,
-    #             'main': {
-    #                 'temp': 25.5,
-    #                 'humidity': 60
-    #             }
-    #         }
-    #     )
+        self.mock_cursor.fetchone.return_value = [1]
+        self.mock_cursor.rowcount = 1
 
-    #     response = self.fetch(f"/weather-progress?user_request_id={mock_uuid}", method="GET")
+        request_repository = RequestRepository(self.mock_db_connection)
+        request_repository.store_request_uuid_to_process(mock_uuid)
+        request_repository.store_request_total_items_to_process(mock_uuid, 1)
 
-    #     response_json = tornado.escape.json_decode(response.body)
+        weather_repository = MagicMock()
+        weather_repository.store_weather_data_on_db.return_value = None
 
-    #     self.assertEqual(response.code, 200)
-    #     self.assertEqual(response_json["status"], "success")
-    #     self.assertEqual(response_json["message"], "weather progress percentage requested successfully")
+        weather_repository.store_weather_data_on_db(
+            mock_uuid,
+            {
+                'id': 123,
+                'main': {
+                    'temp': 25.5,
+                    'humidity': 60
+                }
+            }
+        )
+
+        response = await self.http_client.fetch(
+            self.get_url(f"/weather/progress?user_request_id={mock_uuid}"),
+            method="GET",
+            raise_error=False
+        )
+
+        response_json = tornado.escape.json_decode(response.body)
+
+        assert response.code == 200
+        assert "progress_percentage" in response_json["data"]
