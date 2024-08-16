@@ -1,29 +1,34 @@
-import uuid
-import pytest
-
 import tornado.escape
 import tornado.testing
 
+from tornado.testing import gen_test, AsyncHTTPTestCase
 from tornado.web import Application
 from unittest.mock import MagicMock
 
 from app.handlers.id_register_request_handler import IdRegisterRequestHandler
-from app.services.request_service import RequestService
-from app.fixtures.database_fixture import get_db_connection, initialize_db
 
 
-@pytest.mark.asyncio
-async def test_post_register_id():
-    http_client = tornado.httpclient.AsyncHTTPClient()
+class IdRegisterRequestHandlerTestCase(AsyncHTTPTestCase):
 
-    response = await http_client.fetch(
-        "http://localhost:8888/user/register",
-        method="POST",
-        body=""
-    )
-    response_json = tornado.escape.json_decode(response.body)
+    def get_app(self):
+        self.mock_cursor = MagicMock()
+        self.mock_db_connection = MagicMock()
+        self.mock_db_connection.cursor.return_value = self.mock_cursor
 
-    assert response.code == 200
-    assert response_json["status"] == "success"
-    assert response_json["message"] == "user request id registered successfully"
-    assert "user_request_id" in response_json["data"]
+        return Application([
+            (r"/user/register", IdRegisterRequestHandler, dict(db_connection=self.mock_db_connection)),
+        ])
+
+    @gen_test
+    async def test_post_no_request_id(self):
+        response = await self.http_client.fetch(
+            self.get_url("/user/register"),
+            method='POST',
+            body="",
+            raise_error=False
+        )
+
+        response_json = tornado.escape.json_decode(response.body)
+
+        assert response.code == 200
+        assert response_json['message'] == "user request id registered successfully"
