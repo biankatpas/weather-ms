@@ -93,7 +93,7 @@ Ensure that you include the correct `user_request_id` in the request body when u
 
 Note: If the `.env` file is not correctly configured or the Docker container is not running, the endpoints will not be accessible.
 
-## Running Tests (currently under development)
+## Running Tests (currently at 82% test coverage)
 
 Navigate to the root directory of the project and run the following command:
 
@@ -113,4 +113,3 @@ pytest --cov
 ## Technical Decision Documentation
 
 Notes regarding technical decisions are available in the `docs` folder.
-
